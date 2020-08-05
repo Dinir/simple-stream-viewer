@@ -4,6 +4,9 @@ html, body {
   width: 100%;
   height: 100%;
 }
+html {
+  overflow: hidden;
+}
 
 $video-min-width: 426px; // 240 * 16/9 then floor
 $video-min-height: 240px;
@@ -90,10 +93,12 @@ body {
       order: 0;
     }
     section#video-pane {
+      flex-grow: 0;
       order: 1;
       height: 56.25vw;
     }
     section#chat-pane {
+      flex-grow: 1;
       order: 2;
       width: 100%;
     }
