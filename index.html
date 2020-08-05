@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta content="text/html" http-equiv="content-type">
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Stream Viewer</title>
+<!--  <link rel="shortcut icon" href="/favicon.ico">-->
+  <!--<link rel="apple-touch-icon"
+        href="./appiconios.png"/>
+  <link rel="apple-touch-icon-precomposed"
+        href="./appiconandroid.png"/>-->
+  <link rel="stylesheet" href="./main.css">
+  <style>
+  
+  </style>
+</head>
+
+<body>
+  <section id="video-pane">
+    <iframe marginheight="0" marginwidth="0" allowtransparency="true" allowfullscreen="" src="https://player.angelthump.com/?channel=CHANNEL_NAME" scrolling="true" width="100%" height="100%" frameborder="0"></iframe>
+  </section>
+  <section id="channel-name-input">
+    <section>
+      <label>
+        <span>Video Channel</span>
+        <input type="text">
+        <span>
+            <button value="angelthump">AngelThump</button>
+            <button value="twitch">Twitch</button>
+          </span>
+      </label>
+      <label>
+        <span>Chat Channel</span>
+        <input type="text">
+      </label>
+    </section>
+    <footer>
+      <div>Change Channel...</div>
+    </footer>
+  </section>
+  <section id="chat-pane">
+    <iframe frameborder="0" scrolling="no" id="chat_embed"
+            src="https://www.twitch.tv/embed/CHANNEL_NAME/chat?parent=dinir.github.io">
+    </iframe>
+  </section>
+</body>
+
+</html>

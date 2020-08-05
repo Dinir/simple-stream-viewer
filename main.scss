@@ -1,0 +1,60 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+$video-min-width: 426px; // 240 * 16/9 then floor
+$video-min-height: 240px;
+$chat-width: 340px;
+
+body {
+  background-color: black;
+  color: white;
+}
+
+body {
+  display: flex;
+  & > section {
+  
+  }
+  section#channel-name-input {
+    position: absolute;
+    top: -2em;
+    right: 0;
+    width: $chat-width;
+    transition: top 400ms cubic-bezier(0.25, 0.75, 0.75, 1.25);
+    &:hover {
+      top: 0;
+    }
+  }
+  section#video-pane {
+    flex: auto;
+  }
+  section#chat-pane {
+    flex: 0 0 $chat-width;
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@media all and (max-width: $video-min-width + $chat-width) {
+  body {
+    flex-direction: column;
+    section#channel-name-input {
+      position: inherit;
+      order: 0;
+    }
+    section#video-pane {
+      order: 1;
+      height: 56.25vw;
+    }
+    section#chat-pane {
+      order: 2;
+      width: 100%;
+    }
+  }
+}
