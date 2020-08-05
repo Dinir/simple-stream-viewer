@@ -7,34 +7,32 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0"/>
   <title>Simple Stream Viewer</title>
-<!--  <link rel="shortcut icon" href="/favicon.ico">-->
+<!--  <link rel="shortcut icon" href="./favicon.ico">-->
   <!--<link rel="apple-touch-icon"
         href="./appiconios.png"/>
   <link rel="apple-touch-icon-precomposed"
         href="./appiconandroid.png"/>-->
   <link rel="stylesheet" href="./main.css">
-  <style>
-  
-  </style>
+  <script src="./getQueryVariable.js"></script>
 </head>
 
 <body>
   <section id="video-pane">
-    <iframe marginheight="0" marginwidth="0" allowtransparency="true" allowfullscreen="" src="https://player.angelthump.com/?channel=CHANNEL_NAME" scrolling="true" width="100%" height="100%" frameborder="0"></iframe>
+    <iframe id="video-embed" frameborder="0" allowfullscreen="true" scrolling="no" marginwidth="0" marginheight="0"></iframe>
   </section>
   <section id="channel-name-input">
-    <section>
+    <section class="control-chat-width">
       <label>
-        <span>Video Channel</span>
-        <input type="text">
-        <span>
-            <button value="angelthump">AngelThump</button>
-            <button value="twitch">Twitch</button>
-          </span>
+        <span>Video</span>
+        <input type="text" id="video-channel-input">
+        <span id="service-button">
+          <button value="angelthump">AngelThump</button>
+          <button value="twitch">Twitch</button>
+        </span>
       </label>
       <label>
-        <span>Chat Channel</span>
-        <input type="text">
+        <span>Chat</span>
+        <input type="text" id="chat-channel-input">
       </label>
     </section>
     <footer>
@@ -42,10 +40,98 @@
     </footer>
   </section>
   <section id="chat-pane">
-    <iframe frameborder="0" scrolling="no" id="chat_embed"
-            src="https://www.twitch.tv/embed/CHANNEL_NAME/chat?parent=dinir.github.io">
-    </iframe>
+    <iframe id="chat-embed" frameborder="0" scrolling="no"></iframe>
   </section>
+
+  <script>
+    const queryVariable = {
+      channel: getQueryVariable('ch'),
+      chatChannel: getQueryVariable('chat') || getQueryVariable('ch'),
+      service: getQueryVariable('sv') || 'twitch',
+      parent: getQueryVariable('pa') || window.location.hostname
+    }
+    
+    const videoEmbed = document.getElementById('video-embed')
+    const chatEmbed = document.getElementById('chat-embed')
+    
+    const inputs =
+      Array.from(document.querySelectorAll('#channel-name-input input'))
+    const inputContainerDom = document.getElementById('channel-name-input')
+    const videoInput = inputs.filter(v => v.id === 'video-channel-input')[0]
+    const chatInput = inputs.filter(v => v.id === 'chat-channel-input')[0]
+    
+    const switchVideo = ({service, channel, parent} = queryVariable) => {
+      if (!(service && channel)) return false
+      switch (service) {
+        case 'twitch':
+          videoEmbed.src = 'https://player.twitch.tv' +
+                           `/?channel=${channel}&parent=${parent}`
+          videoEmbed.scrolling = 'no'
+          break
+        case 'angelthump':
+          videoEmbed.src = `https://player.angelthump.com/?channel=${channel}`
+          videoEmbed.scrolling = 'true'
+          break
+      }
+      serviceButtonManager.holdButton(service)
+      return true
+    }
+    const switchChat = ({chatChannel, parent} = queryVariable) => {
+      if (!chatChannel) return false
+      chatEmbed.src = 'https://www.twitch.tv/embed' +
+                      `/${chatChannel}/chat?parent=${parent}`
+      return true
+    }
+    const updateInput = ({channel, chatChannel} = queryVariable) => {
+      videoInput.value = channel || ''
+      chatInput.value = chatChannel || channel || ''
+    }
+
+    const serviceButtonManager = {
+      dom: document.getElementById('service-button'),
+      buttons: Array.from(document.getElementById('service-button').children),
+      getButton: function (service) {
+        return this.buttons.filter(v => v.value === service)[0]
+      },
+      releaseAllButtons: function () {
+        this.buttons.forEach(v => v.disabled = false)
+      },
+      holdButton: function (service) {
+        this.releaseAllButtons()
+        this.getButton(service).disabled = true
+        queryVariable.service = service
+      }
+    }
+  </script>
+  
+  <script>
+    inputContainerDom.addEventListener('change', e => {
+      if (e.target.tagName !== 'INPUT') return false
+      switch (e.target.id) {
+        case 'video-channel-input':
+          queryVariable.channel = e.target.value
+          switchVideo()
+          break
+        case 'chat-channel-input':
+          queryVariable.chatChannel = e.target.value
+          switchChat()
+          break
+      }
+    })
+    
+    serviceButtonManager.dom.addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON') return false
+      queryVariable.service = e.target.value
+      switchVideo()
+    })
+    
+    if (queryVariable.channel) {
+      switchVideo()
+      switchChat()
+      updateInput()
+    }
+    
+  </script>
 </body>
 
 </html>
