@@ -48,7 +48,8 @@
       channel: getQueryVariable('ch'),
       chatChannel: getQueryVariable('chat') || getQueryVariable('ch'),
       service: getQueryVariable('sv') || 'twitch',
-      parent: getQueryVariable('pa') || window.location.hostname
+      parent: getQueryVariable('pa') || window.location.hostname,
+      theme: getQueryVariable('th') || 'dark'
     }
     
     const videoEmbed = document.getElementById('video-embed')
@@ -76,10 +77,12 @@
       serviceButtonManager.holdButton(service)
       return true
     }
-    const switchChat = ({chatChannel, parent} = queryVariable) => {
+    const switchChat = ({chatChannel, parent, theme} = queryVariable) => {
       if (!chatChannel) return false
+      const darkChat = theme === 'dark' ? 'darkpopout&' : ''
       chatEmbed.src = 'https://www.twitch.tv/embed' +
-                      `/${chatChannel}/chat?parent=${parent}`
+                      `/${chatChannel}/chat?${darkChat}` +
+                      `parent=${parent}`
       return true
     }
     const updateInput = ({channel, chatChannel} = queryVariable) => {
